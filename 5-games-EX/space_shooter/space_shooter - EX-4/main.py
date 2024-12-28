@@ -19,8 +19,8 @@ x = 100
 # imports
 player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
 player_rect = player_surf.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-player_direction = pygame.math.Vector2(1,0)
-player_speed = 1000
+player_direction = pygame.math.Vector2(1,1)
+player_speed = 300
 
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
 star_positions = [(randint(0, WINDOW_WIDTH),randint(0, WINDOW_HEIGHT)) for i in range(20)]
@@ -45,6 +45,7 @@ while running:
     keys = pygame.key.get_pressed()
     player_direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
     player_direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
+    player_direction = player_direction.normalize() if player_direction else player_direction
     player_rect.center += player_direction * player_speed * dt
 
     # draw the game
