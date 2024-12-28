@@ -11,10 +11,6 @@ pygame.display.set_caption('Space shooter')
 running = True
 clock = pygame.time.Clock()
 
-# plain surface 
-surf = pygame.Surface((100,200))
-surf.fill('orange')
-x = 100
 
 # imports
 player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
