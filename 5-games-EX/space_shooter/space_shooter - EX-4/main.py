@@ -3,6 +3,24 @@ from os.path import join
 
 from random import randint
 
+class Player(pygame.sprite.Sprite):
+    def __init__(self,groups):
+        super().__init__(groups)
+        self.image = pygame.image.load(join('images', 'player.png')).convert_alpha()
+        self.rect = self.image.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+        self.direction = pygame.math.Vector2(1,1)
+        self.speed = 200
+    def update(self, dt):
+        # input
+        keys = pygame.key.get_pressed()
+        self.direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
+        self.direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
+        self.direction = self.direction.normalize() if self.direction else self.direction
+        self.rect.center += self.direction * self.speed * dt
+
+        recent_keys = pygame.key.get_just_released()
+        if recent_keys[pygame.K_SPACE]:
+            print('fire lasers')
 # general setup 
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
@@ -11,12 +29,10 @@ pygame.display.set_caption('Space shooter')
 running = True
 clock = pygame.time.Clock()
 
+# # imports
 
-# imports
-player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
-player_rect = player_surf.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-player_direction = pygame.math.Vector2(1,1)
-player_speed = 300
+all_sprites = pygame.sprite.Group()
+player = Player(all_sprites)
 
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
 star_positions = [(randint(0, WINDOW_WIDTH),randint(0, WINDOW_HEIGHT)) for i in range(20)]
@@ -34,15 +50,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        # if event.type == pygame.MOUSEMOTION:
-        #     player_rect.center = event.pos
-    # input
-    # print(pygame.mouse.get_pressed())
-    keys = pygame.key.get_pressed()
-    player_direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
-    player_direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
-    player_direction = player_direction.normalize() if player_direction else player_direction
-    player_rect.center += player_direction * player_speed * dt
+
+    all_sprites.update(dt)
 
     # draw the game
     display_surface.fill('darkgray')
@@ -51,8 +60,7 @@ while running:
     
     display_surface.blit(meteor_surf, meteor_rect)
     display_surface.blit(laser_surf, laser_rect)
-    display_surface.blit(player_surf, player_rect)
-
+    all_sprites.draw(display_surface)
     pygame.display.update()
 
 pygame.quit()
