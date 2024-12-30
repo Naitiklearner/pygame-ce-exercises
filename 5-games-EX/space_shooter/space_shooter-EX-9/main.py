@@ -133,7 +133,7 @@ laser_sound.set_volume(0.65)
 explosion_sound = pygame.mixer.Sound(join('audio', 'explosion.wav'))
 game_music_sound = pygame.mixer.Sound(join('audio', 'game_music.wav'))
 game_music_sound.set_volume(0.5)
-game_music_sound.play()
+game_music_sound.play(loops = -1)
 
 # sprites 
 all_sprites = pygame.sprite.Group()
