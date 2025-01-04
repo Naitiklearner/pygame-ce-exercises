@@ -27,8 +27,14 @@ class Game:
         self.gun_cooldown = 100
 
         self.enemy_event = pygame.event.custom_type()
-        pygame.time.set_timer(self.enemy_event, 300)
+        pygame.time.set_timer(self.enemy_event, 500)
         self.spawn_positions = []
+
+        self.impact_sound = pygame.mixer.Sound(join('audio','impact.ogg'))
+        self.impact_sound.set_volume(0.4)
+        self.agame_music.set_volume(0.3)
+        self.shoot_sound = pygame.mixer.Sound(join('audio','shoot.wav'))
+        self.game_music.play(loops= -1)
 
         self.setup()
         self.load_images()
@@ -48,6 +54,7 @@ class Game:
         
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
+            self.shoot_sound.play()
             pos = self.gun.rect.center + self.gun.player_direction * 50
             Bullet(self.bullet_surf, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
             self.can_shoot = False
@@ -84,12 +91,17 @@ class Game:
                 collided_sprite = pygame.sprite.spritecollide(bullet, self.enemy_sprites, False, pygame.sprite.collide_mask)
                 if collided_sprite:
                     for sprite in collided_sprite:
+                        self.impact_sound.play()
                         sprite.destroy()
                     bullet.kill()
+    
+    def player_collision(self):
+        if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False):
+            self.running = False
 
     def run(self):
         while self.running:
-            # dt 
+            # dt
             dt = self.clock.tick() / 1000
 
             # event loop 
@@ -104,7 +116,7 @@ class Game:
             self.input()
             self.all_sprites.update(dt)
             self.bullet_collision()
-            
+            self.player_collision()
             # draw
             self.display_surface.fill('black')
             self.all_sprites.draw(self.player.rect.center)
