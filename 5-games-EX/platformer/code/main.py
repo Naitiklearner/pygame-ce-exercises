@@ -1,6 +1,7 @@
 from settings import * 
 from sprites import *
 from groups import AllSprites
+from support import *
 
 class Game:
     def __init__(self):
@@ -15,7 +16,24 @@ class Game:
         self.collision_sprites = pygame.sprite.Group()
         self.enemies_sprites = pygame.sprite.Group()
 
+
+        self.load_assets()
         self.setup()
+
+        self.worm = Worm((200, 550), (self.all_sprites), self.worm_frames)
+        self.bee = Bee((200, 600), (self.all_sprites), self.bee_frames)
+    def load_assets(self):
+        self.player_frames = import_folder('images', 'player')
+        self.bullet_surf = import_image('images', 'gun', 'bullet')
+        self.fire_surf = import_image('images', 'gun', 'fire')
+        self.bee_frames = import_folder('images', 'enemies', 'bee')
+        self.worm_frames = import_folder('images', 'enemies', 'worm')
+
+        self.impact_sound = pygame.mixer.Sound(join('audio', 'impact.ogg'))
+        self.game_music = pygame.mixer.Sound(join('audio', 'music.wav'))
+        self.shoot_sound = pygame.mixer.Sound(join('audio', 'shoot.wav'))
+
+
 
     def setup(self):
         self.tmx_data = load_pygame(join('data', 'maps', 'world.tmx'))
@@ -25,9 +43,9 @@ class Game:
             Sprite((x * TILE_SIZE,y * TILE_SIZE), image, (self.all_sprites))
         for obj in self.tmx_data.get_layer_by_name('Entities'):
             if obj.name == 'Player':
-                self.player = Player((obj.x, obj.y), (self.all_sprites), self.collision_sprites)
-            # if obj.name == 'Enemy':
-            #     Sprite((obj.x, obj.y), (self.all_sprites, self.collision_sprites))
+                self.player = Player((obj.x, obj.y), (self.all_sprites), self.collision_sprites, self.player_frames)
+            # if obj.name == 'Worm':
+
                 # if layer.name == 'Main':
                 #     for obj in layer:
                 #         if obj.name == 'Main':
