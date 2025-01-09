@@ -1,6 +1,5 @@
 import pygame
-from settings import *
-from os.path import join
+from timerpltfmr import Timer
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, pos, surf, groups):
@@ -30,10 +29,16 @@ class Player(AnimatedSprite):
         self.collision_sprites = collision_sprites
         self.gravity = 90
 
+        self.shoot_timer = Timer(1500)
+
     def input(self):
         keys = pygame.key.get_pressed()
         self.direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
         if keys[pygame.K_SPACE] and self.on_floor: self.jump()
+
+        if pygame.mouse.get_pressed()[0] and self.shoot_timer.active:
+            print('shoot')
+            self.shoot_timer.activate()
 
     def jump(self):
         
