@@ -22,6 +22,7 @@ class Game:
 
         self.worm = Worm((200, 550), (self.all_sprites), self.worm_frames)
         self.bee = Bee((200, 600), (self.all_sprites), self.bee_frames)
+
     def load_assets(self):
         self.player_frames = import_folder('images', 'player')
         self.bullet_surf = import_image('images', 'gun', 'bullet')
@@ -29,9 +30,7 @@ class Game:
         self.bee_frames = import_folder('images', 'enemies', 'bee')
         self.worm_frames = import_folder('images', 'enemies', 'worm')
 
-        self.impact_sound = pygame.mixer.Sound(join('audio', 'impact.ogg'))
-        self.game_music = pygame.mixer.Sound(join('audio', 'music.wav'))
-        self.shoot_sound = pygame.mixer.Sound(join('audio', 'shoot.wav'))
+        self.audio = audio_importer('audio')
 
 
 
